@@ -1,0 +1,39 @@
+import requests
+def recipe_search(ingredient):
+    app_id = '703bbf4f'
+    app_key = 'bf1fc7aea101429da7434b5cbde13e2f'
+    result = requests.get('https://api.edamam.com/search?q={}&app_id={}&app_key={}'.format(ingredient, app_id, app_key))
+    data = result.json()
+    print(result)
+    return data['hits']
+def run():
+    ingredient = input("What ingredient do you require in your recipe? ")
+    results = recipe_search(ingredient)
+    filtered_results = []
+    for result in results:
+        recipe = result['recipe']
+        filtered_results.append(recipe)
+
+    #print(filtered_results)
+
+    health_question = input('Do you have any health requirements? Yes/No ')
+    if health_question == 'yes':
+        health = input("What is your health requirement? ")
+        for item in filtered_results:
+            for label in item['healthLabels']:
+                if label == health:
+                    print(item['label'])
+                    print(item['url'])
+
+    check = input("Would you like to filter recipes by cuisine type? yes/no ")
+    if check == "yes":
+        cuisine = input("What kind of cuisine would you like? ")
+        for item in filtered_results:
+            type = item['cuisineType'][0]
+            #print(type)
+            if type == cuisine:
+                print(item["url"])
+    else:
+        for item in filtered_results:
+            print(item["url"])
+run()
